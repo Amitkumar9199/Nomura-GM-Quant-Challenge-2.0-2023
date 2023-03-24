@@ -50,6 +50,7 @@ source bin/activate
 
 To Install libraries, run below: 
 
+// it takes 25-30 mins to install all the libraries
 For windows users:
 
 pip install -r <requirements.txt path on your PC>
@@ -92,6 +93,8 @@ Run below to generate your current used environment in your code:
 
 pipreqs<SPACE>"<path to the folder where you have coded your solutions/submissions>"<SPACE>--savepath<SPACE>"<path to save current_env.txt>”<SPACE>--encoding<SPACE>utf-8<SPACE>--force
 
+
+// here 'code' is the folder where you have coded your solutions/submissions
 eg, pipreqs "C:\nomura_quant_challenge\code" --savepath "C:\nomura_quant_challenge\current_env.txt" --encoding utf-8 --force
 
 *Please ensure there is no "\" at the end of folder name as its a known issue with pipreqs 
@@ -111,6 +114,12 @@ If you are facing any issues, please contact nomuragmquantchallenge@gmail.com,
 If you feel that you have used only the libraries mentioned in the requirements.txt but still getting error on step 4, 
 please proceed to submit your current environment file in the solutions tab, and we will evaluate
 
-	
-
-
+	/*IN SHORT -WINDOWS */
+# INSTALL PYTHON 3.6.7 # SET ENDVIRONMENT VARAIBLES
+pip install virtualenv
+virtualenv nqc --python=python3.6.7
+nqc\Scripts\activate
+pip install -r requirements.txt   # WAIT FOR 25-30 MINUTES
+pipreqs "B:\Downloads\2023\solution_folder" --savepath "B:\Downloads\2023\current_env.txt" --encoding utf-8 --force  
+python .\venv\check_current_env.py .\requirements.txt .\current_env.txt
+/* END*/
