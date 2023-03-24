@@ -1,0 +1,116 @@
+1) PYTHON VERSION:
+
+We’ll be using latest python 3.6.7 for this challenge. 
+You can download and install python version 3.6.7 from https://www.python.org/downloads/ or https://www.python.org/ftp/python/3.11.2/
+
+You may need to add the new Python to your enviroment path. You can do that as explained in below articles:
+https://www.educative.io/answers/how-to-add-python-to-path-variable-in-windows
+https://datatofish.com/add-python-to-windows-path/
+
+
+2) INSTALL VIRTUALENV TOOL: 
+
+Run “pip install virtualenv” or "pip3 install virtualenv" in your command prompt
+You can also download and install the distribution from https://pypi.org/project/virtualenv/
+
+We are using following main packages in our venv: 
+shap
+matplotlib
+plotly
+numpy
+pandas
+statsmodels
+scipy
+seaborn
+xgboost
+scikit-learn
+pycaret
+jupyter
+lightgbm
+eli5
+
+3) INSTALL AND ACTIVATE “nqc” ENVIRONMENT:
+
+Copy attached file with current zip “requirements.txt” to a folder on your PC
+Run below: 
+
+virtualenv nqc --python=python3.6.7
+
+For windows users:
+
+cd nqc
+Scripts\activate
+
+For Mac users:
+
+cd nqc 
+source bin/activate
+
+* After this, you should see a prefix (nqc) on your command prompt
+
+To Install libraries, run below: 
+
+For windows users:
+
+pip install -r <requirements.txt path on your PC>
+eg, pip install -r "C:\nomura_quant_challenge\requirements.txt"
+
+For Mac users:
+
+pip install -r <requirements_mac.txt path on your PC>
+eg, pip install -r "C:\nomura_quant_challenge\requirements_mac.txt"
+
+Or the same commands with pip3 instead of pip in case the latter doesn't work
+
+* Please make sure your path is in double quotes as mentioned in example above
+
+YOU'RE ALL SET! 
+PLEASE PROCEED TO SCRIPT FOR QUESTIONS USING THE VIRTUAL ENV YOU JUST CREATED! 
+COME BACK TO STEP 4 AFTER YOU'RE DONE SCRIPTING AND WANT TO SUBMIT YOUR SOLUTIONS
+
+4) CHECK ENV BEFORE SUBMISSION
+****THIS STEP NEED TO BE RUN JUST BEFORE YOUR SOLUTION/RESULT SUBMISSION TO ENSURE THAT YOUR ENVIROMENT IS COMPATIBLE WITH requirements.txt
+****THIS STEP DOES NOT NEED TO BE RUN AT THE TIME OF VIRTUAL ENV CREATION (ONLY STEPS 1-3 ABOVE)
+
+Please extract any jupyter notebooks you might have used as .py files in the same folder before this exercise
+
+Before submitting your results, please check your virtual environment as below:
+Activate your virtual env “nqc”. To activate, Go to the venv folder(from step 3) and run activate script as mentioned below:
+
+For windows users:
+
+cd nqc
+Scripts\activate
+
+For Mac users:
+
+cd nqc 
+source bin/activate
+
+pipreqs would have been already installed in your environment, if not, you can install pipreqs by running: “pip install pipreqs”
+Run below to generate your current used environment in your code:
+
+pipreqs<SPACE>"<path to the folder where you have coded your solutions/submissions>"<SPACE>--savepath<SPACE>"<path to save current_env.txt>”<SPACE>--encoding<SPACE>utf-8<SPACE>--force
+
+eg, pipreqs "C:\nomura_quant_challenge\code" --savepath "C:\nomura_quant_challenge\current_env.txt" --encoding utf-8 --force
+
+*Please ensure there is no "\" at the end of folder name as its a known issue with pipreqs 
+
+You have successfully generate your current enviroment file, You can review it if it looks okay before validation steps below
+
+Validation steps:
+
+Save attached file “check_current_env.py” (from the instructions zip) and run as follows:   
+
+python<SPACE><path for check_current_env.py script saved above><SPACE>"<requirements.txt path on your PC>"<SPACE>"<path for current_env.txt>"
+
+Eg, python “C:\nomura_quant_challenge\check_current_env.py” "C:\nomura_quant_challenge\requirements.txt" "C:\nomura_quant_challenge\current_env.txt"
+
+If you are facing any issues, please contact nomuragmquantchallenge@gmail.com, 
+
+If you feel that you have used only the libraries mentioned in the requirements.txt but still getting error on step 4, 
+please proceed to submit your current environment file in the solutions tab, and we will evaluate
+
+	
+
+
