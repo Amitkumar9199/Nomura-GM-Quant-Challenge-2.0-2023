@@ -1,12 +1,17 @@
 import math
+def count_special_pairs1(x, y):
+    count = 0
+    for a in range(1, x + 1):
+        for b in range(1, y + 1):
+            if a % b == a // b:
+                count += 1
+    return count
 
 def count_special_pairs(x, y):
-    count = 0 # initialize count
-    # loop for all values from 1 to sqrt(x)
+    count = 0
     for k in range(1, int(math.sqrt(x)) + 1):
-        # max(0, min(y, x // k - 1) - k) is the number of values of b in the range [k+1, min(y, x // k - 1)] that satisfy a % b = a // b
         count += max(0, min(y, x // k - 1) - k)
-    return count # return the count
+    return count
 
 
 def generate_result(x,y):
