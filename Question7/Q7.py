@@ -8,8 +8,11 @@ def sin(x):
     result = term = x
     i = 1
     while abs(term) >= 1e-10:
+        # compute next term in series
         term *= ((-1 * (x**2)) / ((2 * i) * (2 * i + 1)))
+        # add term to result
         result += term
+        # increment counter for next term in series
         i += 1
     return result
 
@@ -34,10 +37,4 @@ def code_driver():
         f_output.write(res +'\n')
 
 if __name__ == "__main__":
-    code_driver()        
-    # print(generate_result(0))       # Output: 1
-    # print(generate_result(30))      # Output: 0.5
-    # print(generate_result(45))      # Output: 0.6366197723675814
-    # print(generate_result(90))      # Output: 1.5707963267948966
-    # print(generate_result(180))     # Output: 0.01745240643728351
-    # print(generate_result(360))     # Output: 0.00030517578125
+    code_driver()     
