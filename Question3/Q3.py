@@ -60,31 +60,24 @@ def newdate(prev_date,freq):
 # Write a class C_ABC which can be constructed using the details of the financial product ABC.
 class C_ABC:
     def __init__(self, t_start,t_final,freq,prd,F,C):
-        self.t_start = t_start # 𝒕𝒔𝒕𝒂𝒓𝒕 is the start date of the first period of the contract ABC in a string DDMmmYYYY format (e.g. “12Aug2022”)
-        self.t_final = t_final # 𝒕𝒇𝒊𝒏𝒂𝒍 is the end date of the final period of the contract ABC in a string DDMmmYYYY format (e.g. “12Aug2025”)
-        self.freq = freq # 𝒇𝒓𝒆𝒒 is the gap in months for each period in months in string format, possible values are “1m”, “2m”, “3m”, “6m” and “12m”. 
-        self.prd = prd # 𝒑𝒓𝒅 is a positive integer, possible values 1-31, 
-        self.F = F #F is the final redemption payment in decimal number (e.g. 100)
-        self.C = C # 𝑪 is the periodic payment rate in decimal number (e.g. pass 2.4 for 2.4%)
+        self.t_start = t_start 
+        self.t_final = t_final 
+        self.freq = freq 
+        self.prd = prd 
+        self.F = F 
+        self.C = C 
+
     def tau(self,small,large):
-        # Here 𝒕1 and 𝒕2 are the dates in a string DDMmmYYYY format (e.g. “12Aug2022”)
-        # 𝒕𝒂𝒖 is the time difference in years between large and small
         return find_diff(small,large)/365
     
-
     def value_abc(self,tdeal,rdeal):
-        # Here 𝒕𝒅𝒆𝒂𝒍 is the dealing date in a string DDMmmYYYY format (e.g. “12Aug2022”)
-        # 𝒓𝒅𝒆𝒂𝒍 is the rate of return in decimal number (e.g. pass 1.5 for 1.5%)
-        # vdeal=(F+mu_N)/(1+rdeal*tau(tdeal,t_final)*0.01)
-        # mu_i = (cf_i + mu_i_minus_1)*(1+rdeal*tau(tdeal,t_final)*0.01)
-        # return 𝑉𝑑𝑒𝑎𝑙
 
         mu=[]
         mu.append(0) # mu[0]=0
         cf=[]
 
         period_start_i = self.t_start
-        for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 1 )):
+        for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 5 )):
             period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
             if self.tau(period_end_i,self.t_final)<=0: # if period_end_i > t_final
                 period_end_i = self.t_final
@@ -95,7 +88,8 @@ class C_ABC:
                 period_start_i = period_end_i
         
 
-        period_start_i = self.t_start # period_start_i = t_start
+        period_start_i = tdeal # period_start_i = tdeal
+        
         for i in range(0,len(cf)): 
             period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
             if self.tau(period_end_i,self.t_final)<0: # if period_end_i > t_final
@@ -113,11 +107,53 @@ class C_ABC:
 
 
     def rateofreturn_abc(self,tdeal,vdeal):
-        # Here 𝒕𝒅𝒆𝒂𝒍 is the dealing date in a string DDMmmYYYY format (e.g. “12Aug2022”)
-        # 𝑽𝑑𝑒𝑎𝑙 is the value of the contract ABC on the dealing date in decimal number (e.g. 97.93)
-        # 𝑹𝑹𝑶𝑹 is the rate of return in decimal number (e.g. pass 1.5 for 1.5%)
-        # return 𝑹𝑹𝑶𝑹
-        return ((vdeal - tdeal)/(tdeal)) * 100
+        val=0.0
+        ok=[]
+        while val<=100:
+            mu=[]
+            mu.append(0) # mu[0]=0
+            cf=[]
+            temp=val
+            period_start_i = self.t_start
+            for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 5 )):
+                period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
+                if self.tau(period_end_i,self.t_final)<=0: # if period_end_i > t_final
+                    period_end_i = self.t_final
+                    cf.append(self.C*self.tau(period_start_i,period_end_i)*self.F*0.01)
+                    break
+                else: # if period_end_i < t_final
+                    cf.append(self.C*self.tau(period_start_i,period_end_i)*self.F*0.01)
+                    period_start_i = period_end_i
+            
+
+            period_start_i = tdeal # period_start_i = tdeal
+            
+            for i in range(0,len(cf)): 
+                period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
+                if self.tau(period_end_i,self.t_final)<0: # if period_end_i > t_final
+                    period_end_i = self.t_final
+                    mu.append((cf[i]+mu[i])*(1+temp*self.tau(period_start_i,period_end_i)*0.01))
+                else: # if period_end_i < t_final
+                    mu.append((cf[i]+mu[i])*(1+temp*self.tau(period_start_i,period_end_i)*0.01))
+                    period_start_i = period_end_i
+                    if (int)(period_start_i[:2])<self.prd: # if period_start_i[date] < prd
+                        period_start_i = str(self.prd)+period_start_i[2:]
+
+
+            tmp=(self.F+mu[-1])/(1+temp*self.tau(tdeal,self.t_final)*0.01)
+            
+
+            ok.append([abs(tmp-vdeal),val])
+            val+=0.001
+        ok.sort()
+        mp={}
+        for i in range(0,len(ok)):
+            mp[ok[i][0]//1]=ok[i][1]
+        ok=[]
+        for i in mp:
+            ok.append([i,mp[i]])
+        ok.sort()
+        return ok[0][1]
 
     def dvalue_drateofreturn_abc(self,tdeal,rdeal):
         
@@ -127,8 +163,8 @@ class C_ABC:
         dmu_dr=[]
         dmu_dr.append(0) # dmu_dr[0]=0
 
-        period_start_i = self.t_start
-        for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 1 )):
+        period_start_i = self.t_start # period_start_i = t_start
+        for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 5 )):
             period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
             if self.tau(period_end_i,self.t_final)<=0: # if period_end_i > t_final
                 period_end_i = self.t_final
@@ -139,7 +175,7 @@ class C_ABC:
                 period_start_i = period_end_i
         
 
-        period_start_i = self.t_start # period_start_i = t_start
+        period_start_i = tdeal # period_start_i = tdeal
         for i in range(0,len(cf)): 
             period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
             if self.tau(period_end_i,self.t_final)<0: # if period_end_i > t_final
@@ -160,7 +196,56 @@ class C_ABC:
 
         dv_dr = dv_dr + (1/(1+rdeal*self.tau(tdeal,self.t_final)*0.01))*dmu_dr[-1]
         return dv_dr
-    
+
+    def d2value_drateofreturn2_abc(self,tdeal,rdeal):
+        
+        mu=[]
+        mu.append(0) # mu[0]=0
+        cf=[]
+        dmu_dr=[]
+        d2mu_dr2=[]
+        dmu_dr.append(0) # dmu_dr[0]=0
+        d2mu_dr2.append(0) # d2mu_dr2[0]=0
+        
+        period_start_i = self.t_start
+        for i in range(0, int(float(self.tau(self.t_start,self.t_final)) * 12 / int(self.freq[:-1]) + 5 )):
+            period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
+            if self.tau(period_end_i,self.t_final)<=0: # if period_end_i > t_final
+                period_end_i = self.t_final
+                cf.append(self.C*self.tau(period_start_i,period_end_i)*self.F*0.01)
+                break
+            else: # if period_end_i < t_final
+                cf.append(self.C*self.tau(period_start_i,period_end_i)*self.F*0.01)
+                period_start_i = period_end_i
+        
+
+        period_start_i = tdeal # period_start_i = tdeal
+        for i in range(0,len(cf)): 
+            period_end_i = newdate(period_start_i,self.freq) # period_end_i = period_start_i + freq
+            if self.tau(period_end_i,self.t_final)<0: # if period_end_i > t_final
+                period_end_i = self.t_final
+                mu.append((cf[i]+mu[i])*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+                dmu_dr.append((cf[i]+mu[i])*(self.tau(period_start_i,period_end_i)*0.01) + dmu_dr[i]*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+                d2mu_dr2.append(self.tau(period_start_i,period_end_i)*0.01*dmu_dr[i]*2 + d2mu_dr2[i]*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+            else: # if period_end_i < t_final
+                mu.append((cf[i]+mu[i])*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+                dmu_dr.append((cf[i]+mu[i])*(self.tau(period_start_i,period_end_i)*0.01) + dmu_dr[i]*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+                d2mu_dr2.append(self.tau(period_start_i,period_end_i)*0.01*dmu_dr[i]*2 + d2mu_dr2[i]*(1+rdeal*self.tau(period_start_i,period_end_i)*0.01))
+                period_start_i = period_end_i
+                if (int)(period_start_i[:2])<self.prd: # if period_start_i[date] < prd
+                    period_start_i = str(self.prd)+period_start_i[2:]
+
+
+        dv_dr = 0
+        dv_dr = dv_dr + ((self.F+mu[-1]) / ( (1+rdeal*self.tau(tdeal,self.t_final)*0.01)**2 ))* (-1) * self.tau(tdeal,self.t_final)*0.01
+        dv_dr = dv_dr + (1/(1+rdeal*self.tau(tdeal,self.t_final)*0.01))*dmu_dr[-1]
+
+        d2v_dr2 = 0
+        d2v_dr2 = d2v_dr2 + ((self.F+mu[-1])* 2 * ((self.tau(tdeal,self.t_final)*0.01)**2))/((1+rdeal*self.tau(tdeal,self.t_final)*0.01)**3)
+        d2v_dr2 = d2v_dr2 - (2 * (self.tau(tdeal,self.t_final)*0.01) * dmu_dr[-1]) / ((1+rdeal*self.tau(tdeal,self.t_final)*0.01)**2)
+        d2v_dr2 = d2v_dr2 + (1/(1+rdeal*self.tau(tdeal,self.t_final)*0.01))*d2mu_dr2[-1]
+        return d2v_dr2
+
 # For the object o_abc = C_ABC(“03Feb2022”, “03Feb2024”, “3m”, 3, 100, 4)
 # (1) Function = o_abc.value_abc, 𝑡𝑑𝑒𝑎𝑙 = “15Mar2023”, 𝑟𝑑𝑒𝑎𝑙 = 1.1
 # (2) Function = o_abc.rateofreturn_abc, 𝑡𝑑𝑒𝑎𝑙 = “15Mar2023”, 𝑉𝑑𝑒𝑎𝑙 = 115.1
@@ -170,6 +255,11 @@ class C_ABC:
 
 o_abc = C_ABC("03Feb2022", "03Feb2024", "3m", 3, 100, 4)
 print(o_abc.value_abc("15Mar2023", 1.1))
-# print(o_abc.rateofreturn_abc("15Mar2023", 115.1))
+print(o_abc.rateofreturn_abc("15Mar2023", 115.1))
 print(o_abc.dvalue_drateofreturn_abc("27Apr2023", 2.37))
-# print(o_abc.d2value_drateofreturn2_abc("07Jan2023", 5.3))
+print(o_abc.d2value_drateofreturn2_abc("07Jan2023", 5.3))
+
+# 107.01366006546566
+# 1.0020000000000004
+# -0.7845049141872796
+# 0.02056978870383186
