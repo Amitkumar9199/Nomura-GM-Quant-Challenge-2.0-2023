@@ -3,18 +3,21 @@ month = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
 
 month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
+# A class to store a date
 class Date:
     def __init__(self, day, month, year):
         self.day = day
         self.month = month
         self.year = year
 
+# This function counts number of leap years before the given date
 def countLeapYears(d):
     years = d.year
     if(d.month <= 2):
         years -= 1
     return years//4 - years//100 + years//400
 
+# Returns number of days between two given dates
 def get_diff(dt1, dt2):
     n1 = dt1.year * 365 + dt1.day
     for i in range(dt1.month - 1):
@@ -28,6 +31,7 @@ def get_diff(dt1, dt2):
 
     return n2 - n1
 
+# read the date in the format ddMMMyyyy and return the difference in days
 def find_diff(t_d, t_e):
     d1 = int(t_d[:2])
     d2 = int(t_e[:2])
@@ -40,6 +44,7 @@ def find_diff(t_d, t_e):
 
     return get_diff(dt1, dt2)
 
+# read the date in the format ddMMMyyyy and return the new date after adding the frequency to it
 def newdate(prev_date,freq):
     d1 = int(prev_date[:2])
     m1 = month[prev_date[2:5]]
@@ -67,6 +72,7 @@ class C_ABC:
         self.F = F 
         self.C = C 
 
+    # This function returns the number of years between two dates
     def tau(self,small,large):
         return find_diff(small,large)/365
     
@@ -144,7 +150,7 @@ class C_ABC:
             
 
             ok.append([abs(tmp-vdeal),val])
-            val+=0.001
+            val+=0.01
         ok.sort()
         mp={}
         for i in range(0,len(ok)):
@@ -260,6 +266,6 @@ print(o_abc.dvalue_drateofreturn_abc("27Apr2023", 2.37))
 print(o_abc.d2value_drateofreturn2_abc("07Jan2023", 5.3))
 
 # 107.01366006546566
-# 1.0020000000000004
+# 1.0000000000000007
 # -0.7845049141872796
 # 0.02056978870383186
