@@ -144,7 +144,7 @@ class C_ABC:
             
 
             ok.append([abs(tmp-vdeal),val])
-            val+=0.001
+            val+=0.01
         ok.sort()
         mp={}
         for i in range(0,len(ok)):
@@ -260,6 +260,6 @@ print(o_abc.dvalue_drateofreturn_abc("27Apr2023", 2.37))
 print(o_abc.d2value_drateofreturn2_abc("07Jan2023", 5.3))
 
 # 107.01366006546566
-# 1.0020000000000004
+# 1.0000000000000007
 # -0.7845049141872796
 # 0.02056978870383186
