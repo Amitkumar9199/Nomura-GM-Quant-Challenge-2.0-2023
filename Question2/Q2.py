@@ -1,14 +1,25 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
+import numpy as np
 
 def transform_data(df):
+    
     df.fillna(df.mean(), inplace=True)
+    
     df['diff_high_low'] = df['high'] - df['low']
+    
     df['diff_open_close'] = df['open'] - df['close']
+    
     df['ratio_currvol_prevvol']=df['volume']/df['prev volume']
+    
+    df['ratio_diffhighclose_difflowclsoe']=(df['high']-df['close'])/(df['low']-df['close'])
+    df['ratio_diffhighclose_difflowclsoe'].replace(np.inf, np.nan, inplace=True)
+    df['ratio_diffhighclose_difflowclsoe'].replace(-np.inf, np.nan, inplace=True)
+    df['ratio_diffhighclose_difflowclsoe'].fillna(df['ratio_diffhighclose_difflowclsoe'].median(), inplace=True)
+
     df.drop(['high','low','open','close','volume','prev volume'],axis=1,inplace=True)
-    X=df.filter(['return','volatility','diff_high_low', 'diff_open_close', 'ratio_currvol_prevvol'], axis = 1)
+    X=df.filter(['ratio_diffhighclose_difflowclsoe','return','volatility','diff_high_low', 'diff_open_close', 'ratio_currvol_prevvol'], axis = 1)
     scaler = MinMaxScaler()
     X = scaler.fit_transform(X)
     return X
