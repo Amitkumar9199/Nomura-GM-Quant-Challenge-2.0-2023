@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier 
 import numpy as np
 
 def transform_data(df):
@@ -48,7 +48,7 @@ def generate_model(x):
     train_data.drop(['next month return sign'],axis=1,inplace=True)
     X_train = transform_data(train_data)
 
-    rf=RandomForestClassifier()
+    rf=RandomForestClassifier(random_state=42)
     rf.fit(X_train,y_train)
     return rf
 
